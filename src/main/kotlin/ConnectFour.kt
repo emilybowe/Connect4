@@ -1,5 +1,9 @@
 import kotlin.random.Random
 
+enum class Script() {
+
+}
+
 class ConnectFour {
     var board = arrayOf<Array<Int>>()
     var opponantX : Int = Random.nextInt(0, 5)
@@ -8,12 +12,13 @@ class ConnectFour {
     var playerY = Integer.valueOf(readLine())
 
 
+
     fun play() {
         setup()
         do {
             game()
             if()
-        } while (1==1)
+        } while ()
 
     }
 
@@ -51,7 +56,28 @@ class ConnectFour {
         checkWinner(playerX, playerY)
     }
 
-    fun checkWinner(xValue: Int, yValue: Int) {
+    fun checkWinner(xValue: Int, yValue: Int): Boolean{
+        if(checkHorizontal(xValue, yValue)){
+
+        } else if (checkDiagonal(xValue, yValue)) {
+
+        } else if(checkVertical(xValue, yValue)) {
+
+        } else {
+
+        }
+
+    }
+
+    fun checkHorizontal(xValue: Int, yValue: Int) : Boolean{
+
+    }
+
+    fun checkDiagonal(xValue: Int, yValue: Int) : Boolean{
+
+    }
+
+    fun checkVertical(xValue: Int, yValue: Int) : Boolean{
 
     }
 
