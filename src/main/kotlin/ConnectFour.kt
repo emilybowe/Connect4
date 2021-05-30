@@ -1,34 +1,33 @@
 import kotlin.random.Random
 
-enum class Script() {
-
+enum class Script(val shortHandScript: String) {
+    move("Your Move"),
+    turn("Now my turn....hmm"),
+    moveMe("ok I'm moving")
 }
 
 class ConnectFour {
     var board = arrayOf<Array<Int>>()
     var opponantX : Int = Random.nextInt(0, 5)
     var opponantY : Int = Random.nextInt(0, 6)
-    var playerX = Integer.valueOf(readLine())
-    var playerY = Integer.valueOf(readLine())
-
-
+    var playerX : Int = 0
+    var playerY : Int = 0
 
     fun play() {
         setup()
-        do {
-            game()
-            if()
-        } while ()
-
+        game()
     }
 
     fun game() {
         player()
         opponant()
+        player()
+        opponant()
+        player()
+        opponant()
     }
 
     fun setup() {
-
         for (i in 0..5) {
             var array = arrayOf<Int>()
             for (j in 0..6) {
@@ -37,7 +36,6 @@ class ConnectFour {
             board += array
         }
         printBoard()
-
     }
 
     fun printBoard() {
@@ -50,7 +48,9 @@ class ConnectFour {
     }
 
     fun player() {
-        println("Your move")
+        println(Script.move.shortHandScript)
+        playerX = Integer.valueOf(readLine())
+        playerY = Integer.valueOf(readLine())
         board[playerX][playerY] = 1
         printBoard()
         checkWinner(playerX, playerY)
@@ -66,29 +66,32 @@ class ConnectFour {
         } else {
 
         }
-
+        return false
     }
 
     fun checkHorizontal(xValue: Int, yValue: Int) : Boolean{
-
+        return false
     }
 
     fun checkDiagonal(xValue: Int, yValue: Int) : Boolean{
-
+        return false
     }
 
     fun checkVertical(xValue: Int, yValue: Int) : Boolean{
-
+        return false
     }
 
     fun opponant() {
-        println()
-        println("Now my turn....hmm")
-        println()
+        println(Script.turn.shortHandScript)
         Thread.sleep(5_000)
-        println("ok I'm moving")
+        println(Script.moveMe.shortHandScript)
         Thread.sleep(1_000)
-        board[opponantX][opponantY] = 2
+        if(board.contains(2)) {
+            board[opponantX+1][opponantY]
+        } else {
+            board[opponantX][opponantY] = 2
+        }
+
         printBoard()
         checkWinner(opponantX, opponantY)
     }
