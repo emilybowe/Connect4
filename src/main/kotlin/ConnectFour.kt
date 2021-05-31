@@ -1,33 +1,63 @@
-import kotlin.random.Random
+fun main(args: Array<String>) {
+    var testList : MutableList<Int> = mutableListOf<Int>()
+    testList.add(0, 0)
+    testList.add(1, 0)
+
+    var connectFour = ConnectFour()
+    connectFour.playConnectFour(testList)
+
+}
 
 enum class Script(val shortHandScript: String) {
-    move("Your Move"),
-    turn("Now my turn....hmm"),
-    moveMe("ok I'm moving")
+    Move("Your Move"),
+    Turn("Now my turn....hmm"),
+    MoveMe("ok I'm moving")
 }
 
 class ConnectFour {
     var board = arrayOf<Array<Int>>()
-    var opponantX : Int = Random.nextInt(0, 5)
-    var opponantY : Int = Random.nextInt(0, 6)
-    var playerX : Int = 0
-    var playerY : Int = 0
+    var playersCounter = 1
+    var opponentsCounter = 2
+    var xValue : Int = 0
+    var yValue : Int = 0
 
-    fun play() {
-        setup()
-        game()
+    fun playConnectFour(moveList : MutableList<Int> = mutableListOf<Int>()) {
+        setup(moveList)
+        play(moveList)
     }
 
-    fun game() {
-        player()
-        opponant()
-        player()
-        opponant()
-        player()
-        opponant()
+    fun setup(moveList : MutableList<Int> = mutableListOf<Int>()) {
+        setupBoard()
+        setupPlayerMoves(moveList)
+        setupOpponentMoves()
     }
 
-    fun setup() {
+    fun play(moveList : MutableList<Int> = mutableListOf<Int>()) {
+        usePlayerMove()
+    }
+
+    fun setupBoard(){
+        buildBoard()
+        printBoard()
+    }
+
+    fun setupPlayerMoves(moveList : MutableList<Int> = mutableListOf<Int>()) {
+        getNextMoveForPlayer(moveList)
+        addPlayerMoveToList(xValue, yValue, moveList)
+    }
+
+    fun usePlayerMove() {
+        useMoveOnPlayerList()
+        removePlayerMoveThatHasBeenUsed()
+    }
+
+    fun setupOpponentMoves() {
+        generateOpponentMove()
+        //var opponentX : Int = Random.nextInt(0, 5)
+        //var opponentY : Int = Random.nextInt(0, 6)
+    }
+
+    fun buildBoard() {
         for (i in 0..5) {
             var array = arrayOf<Int>()
             for (j in 0..6) {
@@ -35,7 +65,6 @@ class ConnectFour {
             }
             board += array
         }
-        printBoard()
     }
 
     fun printBoard() {
@@ -47,57 +76,33 @@ class ConnectFour {
         }
     }
 
-    fun player() {
-        println(Script.move.shortHandScript)
-        playerX = Integer.valueOf(readLine())
-        playerY = Integer.valueOf(readLine())
-        board[playerX][playerY] = 1
-        printBoard()
-        checkWinner(playerX, playerY)
-    }
-
-    fun checkWinner(xValue: Int, yValue: Int): Boolean{
-        if(checkHorizontal(xValue, yValue)){
-
-        } else if (checkDiagonal(xValue, yValue)) {
-
-        } else if(checkVertical(xValue, yValue)) {
-
-        } else {
-
+    fun getNextMoveForPlayer(moveList : MutableList<Int> = mutableListOf<Int>()) {
+        if(moveList.isEmpty()) {
+            xValue = Integer.valueOf(readLine())
+            yValue = Integer.valueOf(readLine())
+            addPlayerMoveToList(xValue, yValue)
         }
-        return false
     }
 
-    fun checkHorizontal(xValue: Int, yValue: Int) : Boolean{
-        return false
+    fun addPlayerMoveToList(xValue: Int, yValue: Int, moveList: MutableList<Int> = mutableListOf<Int>()) {
+        moveList.add(xValue)
+        moveList.add(yValue)
     }
 
-    fun checkDiagonal(xValue: Int, yValue: Int) : Boolean{
-        return false
+    fun useMoveOnPlayerList(moveList : MutableList<Int> = mutableListOf<Int>()) {
+        board[moveList[0]][moveList[1]] = playersCounter
     }
 
-    fun checkVertical(xValue: Int, yValue: Int) : Boolean{
-        return false
-    }
-
-    fun opponant() {
-        println(Script.turn.shortHandScript)
-        Thread.sleep(5_000)
-        println(Script.moveMe.shortHandScript)
-        Thread.sleep(1_000)
-        if(board.contains(2)) {
-            board[opponantX+1][opponantY]
-        } else {
-            board[opponantX][opponantY] = 2
+    fun removePlayerMoveThatHasBeenUsed(moveList : MutableList<Int> = mutableListOf<Int>()) {
+        if(moveList.isNotEmpty()) {
+            moveList.remove(0)
+            moveList.remove(1)
         }
-
-        printBoard()
-        checkWinner(opponantX, opponantY)
     }
+
+    fun generateOpponentMove(opponentX: Int, opponentY: Int) {
+        board[opponentX][opponentY] = opponentsCounter
+    }
+
 }
 
-fun main(args: Array<String>) {
-    var connectFour = ConnectFour()
-    connectFour.play()
-}
