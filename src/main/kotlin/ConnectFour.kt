@@ -1,5 +1,9 @@
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
+
+//TODO - refactor and make methods more generic so player methods and opponent methods can be condensed
+//TODO - improve outcome so moves that are taken already don't just offer auto generated moves
 
 fun main(args: Array<String>) {
     var testList : MutableList<Int> = mutableListOf<Int>()
@@ -14,7 +18,10 @@ fun main(args: Array<String>) {
 enum class Script(val shortHandScript: String) {
     Move("Your Move"),
     Turn("Now my turn....hmm"),
-    MoveMe("ok I'm moving")
+    MoveMe("ok I'm moving"),
+    Player("Player won"),
+    Opponent("Opponent won")
+
 }
 
 class ConnectFour {
@@ -25,6 +32,10 @@ class ConnectFour {
     var yValue : Int = 0
     var xMax : Int = 5
     var yMax : Int = 6
+    var playerTurn = 0
+    var minimumTurnNumberToWin = 4
+    var playerTurnsToDetermineWinner = ArrayDeque<Int>()
+    var opponentTurnsToDetermineWinner = ArrayDeque<Int>()
 
     fun playConnectFour(playerMoveList : MutableList<Int> = mutableListOf<Int>()) {
         setup(playerMoveList)
@@ -59,21 +70,41 @@ class ConnectFour {
         }
     }
 
-    fun play(playerMoveList : MutableList<Int> = mutableListOf<Int>()) {
+    fun play(playerMoveList : MutableList<Int> = mutableListOf<Int>()): String {
         while (true) {
             setupPlayerMoves(playerMoveList)
             setupOpponentMoves()
             useAndRemovePlayerMove()
-            useAndRemoveOpponentMove()
-
-            if() {
-                break
+            //no point checking for a winner until after 4 rounds
+            if(playerTurn >= minimumTurnNumberToWin) {
+                if(isThereAWinner()) {
+                    return Script.Player.shortHandScript
+                } else {
+                    useAndRemoveOpponentMove()
+                }
+                if (isThereAWinner()) {
+                    return Script.Opponent.shortHandScript
+                }
             }
+
         }
+    }
+
+    fun isThereAWinner() : Boolean {
 
     }
 
-    fun checkForWinner() {
+    fun isThereAWinnerHorizontal() {
+        //are the X's equal
+
+    }
+
+    fun isThereAWinnerVertical() {
+        //are the Ys equal
+
+    }
+
+    fun isThereAWinnerDiagonal() {
 
     }
 
@@ -106,11 +137,17 @@ class ConnectFour {
     fun addPlayerMoveToList(xValue: Int, yValue: Int, playerMoveList: MutableList<Int> = mutableListOf<Int>()) {
         playerMoveList.add(xValue)
         playerMoveList.add(yValue)
+        //push y first so you can pop off x and y in that order, more conventional
+        playerTurnsToDetermineWinner.offer(yValue)
+        playerTurnsToDetermineWinner.offer(xValue)
+
     }
 
     fun addOpponentMoveToList(xValue: Int, yValue: Int, opponentMoveList: MutableList<Int> = mutableListOf<Int>()) {
         opponentMoveList.add(xValue)
         opponentMoveList.add(yValue)
+        opponentTurnsToDetermineWinner.offer(yValue)
+        opponentTurnsToDetermineWinner.offer(xValue)
     }
 
     fun useAndRemovePlayerMove(playerMoveList : MutableList<Int> = mutableListOf<Int>()) {
@@ -126,8 +163,10 @@ class ConnectFour {
     fun useMoveOnPlayerList(playerMoveList : MutableList<Int> = mutableListOf<Int>()) {
         if(isThisBoardPositionAlreadyTaken(playerMoveList[0], playerMoveList[1])) {
             board[generateRandomXValue()][generateRandomYValue()] = playersCounter
+            playerTurn++
         } else {
             board[playerMoveList[0]][playerMoveList[1]] = playersCounter
+            playerTurn++
         }
 
     }
