@@ -3,7 +3,6 @@ import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 //TODO - refactor and make methods more generic so player methods and opponent methods can be condensed
-//TODO - improve outcome so moves that are taken already don't just offer auto generated moves
 
 fun main(args: Array<String>) {
     var testList : MutableList<Int> = mutableListOf<Int>()
@@ -34,8 +33,8 @@ class ConnectFour {
     var yMax : Int = 6
     var playerTurn = 0
     var minimumTurnNumberToWin = 4
-    var playerTurnsToDetermineWinner = ArrayDeque<Int>()
-    var opponentTurnsToDetermineWinner = ArrayDeque<Int>()
+    //var playerTurnsToDetermineWinner = ArrayDeque<Int>()
+    //var opponentTurnsToDetermineWinner = ArrayDeque<Int>()
 
     fun playConnectFour(playerMoveList : MutableList<Int> = mutableListOf<Int>()) {
         setup(playerMoveList)
@@ -91,17 +90,34 @@ class ConnectFour {
     }
 
     fun isThereAWinner() : Boolean {
+        isThereAWinnerHorizontal()
+    }
+
+    fun isThereAWinnerHorizontal(): Boolean {
+        var i : Int = 0
+        var j : Int = 0
+        //java for loop equivilent?
+        //while loop
+        if(horizontalCheck(i, j)) {
+            return true
+        } else if (horizontalCheck(i, j+1)) {
+            return true
+        } else if (horizontalCheck(i, j+2)) {
+            return true
+        } else return horizontalCheck(i, j+3)
+    }
+
+    fun horizontalCheck(i : Int, j : Int) : Boolean{
+        return board[i][j] == board[i][j+1] && board[i][j+1] == board[i][j+2] && board[i][j+2] == board[i][j+3]
+    }
+
+
+    fun isThereAWinnerVertical(i : Int, j : Int) : Boolean{
 
     }
 
-    fun isThereAWinnerHorizontal() {
-        //are the X's equal
-
-    }
-
-    fun isThereAWinnerVertical() {
-        //are the Ys equal
-
+    fun verticalCheck() {
+        return board[i][j] == board[i+1][j] && board[i+1][j] == board[i+2][j] && board[i+2][j] == board[i+3][j]
     }
 
     fun isThereAWinnerDiagonal() {
@@ -137,17 +153,17 @@ class ConnectFour {
     fun addPlayerMoveToList(xValue: Int, yValue: Int, playerMoveList: MutableList<Int> = mutableListOf<Int>()) {
         playerMoveList.add(xValue)
         playerMoveList.add(yValue)
-        //push y first so you can pop off x and y in that order, more conventional
-        playerTurnsToDetermineWinner.offer(yValue)
-        playerTurnsToDetermineWinner.offer(xValue)
+
+        //playerTurnsToDetermineWinner.offer(yValue)
+        //playerTurnsToDetermineWinner.offer(xValue)
 
     }
 
     fun addOpponentMoveToList(xValue: Int, yValue: Int, opponentMoveList: MutableList<Int> = mutableListOf<Int>()) {
         opponentMoveList.add(xValue)
         opponentMoveList.add(yValue)
-        opponentTurnsToDetermineWinner.offer(yValue)
-        opponentTurnsToDetermineWinner.offer(xValue)
+        //opponentTurnsToDetermineWinner.offer(yValue)
+        //opponentTurnsToDetermineWinner.offer(xValue)
     }
 
     fun useAndRemovePlayerMove(playerMoveList : MutableList<Int> = mutableListOf<Int>()) {
